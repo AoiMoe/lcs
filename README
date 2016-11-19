@@ -1,4 +1,4 @@
-This is a simple template to calcurate longest common subsequence with
+This is a simple template to calculate longest common subsequence with
 algorithm [1], written in C++03 for now.
 
 [1] Sun Wu, Udi Manber, Gene Myers, and Webb Miller,
