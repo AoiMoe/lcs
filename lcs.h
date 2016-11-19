@@ -44,6 +44,8 @@ namespace LCS
 #define LCS_FINAL_		/* the member fn unable to be overriden */
 #define LCS_NEED_OVERRIDE_	/* the member fn needed to be overriden */
 
+template <class Inst_> void calculate(Inst_ &);
+
 //
 // class Detail_ - implementation details of the algorithm.
 //
@@ -74,18 +76,17 @@ private:
 	typedef typename Inst_::Fp Fp_;
 	typedef typename Inst_::FpArray FpArray_;
 
-	typedef Off_ Swapper_(Off_, Off_);
-	static Off_ first_(Off_ x, Off_ y)
-	{
-		return x;
-	}
-	static Off_ second_(Off_ x, Off_ y)
-	{
-		return y;
-	}
+	struct NonSwap_ {
+		static Off_ first(Off_ x, Off_) { return x; }
+		static Off_ second(Off_, Off_ y) { return y; }
+	};
+	struct Swap_ {
+		static Off_ first(Off_, Off_ y) { return y; }
+		static Off_ second(Off_ x, Off_) { return x; }
+	};
 
 	// calculate fp[k] from either fp[k-1] or fp[k+1]
-	template <Swapper_ Fx_, Swapper_ Fy_>
+	template <class Sw_>
 	static Off_ calculate_fp_k_(Inst_ &inst, Off_ k)
 	{
 		Off_ vs_y0, hs_y0, vs_k0, hs_k0, x0, y0, k0, x, y;
@@ -107,17 +108,17 @@ private:
 
 		// snake
 		while (x<inst.M() && y<inst.N() &&
-		       inst.compare(Fx_(x, y), Fy_(x, y)))
+		       inst.compare(Sw_::first(x, y), Sw_::second(x, y)))
 			x++, y++;
 
-		inst.common_sequence(Fx_(x0, y0), Fx_(x, y),
-				     Fy_(x0, y0), Fy_(x, y),
+		inst.common_sequence(Sw_::first(x0, y0), Sw_::first(x, y),
+				     Sw_::second(x0, y0), Sw_::second(x, y),
 				     k0, k);
 
 		return y;
 	}
 	/* main body of the calculation of LCS */
-	template <Swapper_ Fx_, Swapper_ Fy_>
+	template <class Sw_>
 	static void calculate_main_tmpl_(Inst_ &inst)
 	{
 		inst.begin();
@@ -128,29 +129,19 @@ private:
 			Off_ k;
 			inst.incr_p();
 			for (k=-inst.p(); k<inst.delta(); ++k)
-				inst.fp(k) =
-				    calculate_fp_k_<Fx_, Fy_>(inst, k);
+				inst.fp(k) = calculate_fp_k_<Sw_>(inst, k);
 			for (k=inst.delta()+inst.p(); k>=inst.delta(); --k)
-				inst.fp(k) =
-				    calculate_fp_k_<Fx_, Fy_>(inst, k);
+				inst.fp(k) = calculate_fp_k_<Sw_>(inst, k);
 		} while (fp_delta != inst.N());
 
 		inst.done();
 	}
-	static void calculate_main_(Inst_ &inst)
-	{
-		calculate_main_tmpl_<first_, second_>(inst);
-	}
-	static void calculate_main_swap_(Inst_ &inst)
-	{
-		calculate_main_tmpl_<second_, first_>(inst);
-	}
 	static void calculate_(Inst_ &inst)
 	{
 		if (inst.isswap())
-			calculate_main_swap_(inst);
+			calculate_main_tmpl_<Swap_>(inst);
 		else
-			calculate_main_(inst);
+			calculate_main_tmpl_<NonSwap_>(inst);
 	}
 };
 
