@@ -1,0 +1,7 @@
+This is a simple template to calcurate least common sequence[1],
+written in C++03 for now.
+
+[1] S. Wu, E. Myers, U. Manber, and W. Miller,
+    "An O(NP) Sequence Comparison Algorithm,"
+    Information Processing Letters 35, 6 (1990), 317-323
+    http://www.eecs.berkeley.edu/~gene/Papers/np_diff.pdf
