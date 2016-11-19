@@ -1,5 +1,3 @@
-/*	$AoiMoe: $	*/
-
 /*-
  * Copyright (c)2005 Takuya SHIOZAKI,
  * All rights reserved.
