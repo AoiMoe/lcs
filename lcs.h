@@ -32,10 +32,9 @@
 //
 // This template class implements the algorithm [1].
 //
-//   [1] S. Wu, E. Myers, U. Manber, and W. Miller,
+//   [1] Sun Wu, Udi Manber, Gene Myers, and Webb Miller,
 //       "An O(NP) Sequence Comparison Algorithm,"
-//       Information Processing Letters 35, 6 (1990), 317-323
-//       http://www.eecs.berkeley.edu/~gene/Papers/np_diff.pdf
+//       Information Processing Letters Volume 35, Issue 6 (1990), pp.317-323.
 //
 
 namespace LCS
